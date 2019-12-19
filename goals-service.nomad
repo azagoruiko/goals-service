@@ -42,7 +42,7 @@ EOH
       }
 
       config {
-        image = "127.0.0.1:9999/docker/goals-service:0.0.3"
+        image = "127.0.0.1:9999/docker/goals-service:0.0.6"
         
         port_map {
           web = 8080

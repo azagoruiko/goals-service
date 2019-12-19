@@ -19,6 +19,9 @@ public class LimitsServiceImpl implements LimitsService {
     }
 
     private Limit fromDTO(LimitDTO limitDTO) {
+        if (limitDTO == null) {
+            return null;
+        }
         return new Limit(
                 limitDTO.getYear(),
                 limitDTO.getMonth(),
@@ -29,6 +32,9 @@ public class LimitsServiceImpl implements LimitsService {
     }
 
     private LimitDTO fromModel(Limit limit) {
+        if (limit == null) {
+            return null;
+        }
         return new LimitDTO(
                 limit.getYear(),
                 limit.getMonth(),

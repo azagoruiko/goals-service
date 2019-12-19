@@ -20,13 +20,13 @@ public class JdbcLimitsDao implements LimitsDao {
             "    AND goals.limits.family = EXCLUDED.family\n" +
             "    AND goals.limits.category = EXCLUDED.category";
 
-    private static final String FIND_LIMIT = "SELECT year, month, category, \"limit\" FROM goals.limits\n" +
+    private static final String FIND_LIMIT = "SELECT year, month, category, family, \"limit\" FROM goals.limits\n" +
             "WHERE year = ?\n" +
             "    AND month = ?\n" +
-            "    AND family = ?\n" +
-            "    AND category = ?";
+            "    AND category = ?\n" +
+            "    AND family = ?";
 
-    private static final String FIND_ALL_LIMITS = "SELECT year, month, category, \"limit\" FROM goals.limits\n" +
+    private static final String FIND_ALL_LIMITS = "SELECT year, month, category, family, \"limit\" FROM goals.limits\n" +
             "WHERE year = ?\n" +
             "    AND month = ?\n" +
             "    AND family = ?";
