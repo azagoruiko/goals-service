@@ -29,7 +29,7 @@ public class LimitsController {
     public LimitDTO put(@RequestBody LimitDTO limit) {
         Calendar date = Calendar.getInstance();
         limit.setYear(date.get(Calendar.YEAR));
-        limit.setMonth(date.get(Calendar.MONTH));
+        limit.setMonth(date.get(Calendar.MONTH)+1);
         return this.limitsService.setLimit(limit);
     }
 
@@ -37,7 +37,7 @@ public class LimitsController {
     public LimitDTO get(@PathVariable String family,
                         @PathVariable String category) {
         Calendar date = Calendar.getInstance();
-        return this.limitsService.getLimit(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
+        return this.limitsService.getLimit(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1,
                 category, family);
 
     }
@@ -45,7 +45,15 @@ public class LimitsController {
     @RequestMapping(value = "/limits/{family}", method = RequestMethod.GET)
     public List<LimitDTO> get(@PathVariable String family) {
         Calendar date = Calendar.getInstance();
-        return this.limitsService.getLimits(date.get(Calendar.YEAR), date.get(Calendar.MONTH),
+        return this.limitsService.getLimits(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1,
+                family);
+
+    }
+
+    @RequestMapping(value = "/report/limits/{family}", method = RequestMethod.GET)
+    public List<LimitReportItemDTO> getReport(@PathVariable String family) {
+        Calendar date = Calendar.getInstance();
+        return this.limitsService.getLimitReport(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1,
                 family);
 
     }

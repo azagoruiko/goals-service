@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ua.org.zagoruiko.expenses.goalsservice.model.Limit;
+import ua.org.zagoruiko.expenses.goalsservice.model.LimitReportItem;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,24 @@ public class JdbcLimitsDao implements LimitsDao {
             "WHERE year = ?\n" +
             "    AND month = ?\n" +
             "    AND family = ?";
+
+    private static final String LIMITS_REPORT = "SELECT g.category, g.month, COALESCE(tr.am, 0) am, COALESCE(g.limit, 0) lim,\n" +
+            "       ROUND(COALESCE(am/\"limit\", 0) * 100) percent\n" +
+            "FROM (SELECT\n" +
+            "    date_part('month', t.transaction_date) \"month\",\n" +
+            "    date_part('year', t.transaction_date) \"year\",\n" +
+            "    ROUND(SUM(amount)) * -1 am,\n" +
+            "    category\n" +
+            "FROM expenses.transactions t\n" +
+            "    GROUP BY month, year, category) tr\n" +
+            "RIGHT JOIN goals.limits g\n" +
+            "    ON g.year = tr.year\n" +
+            "    AND g.month = tr.month\n" +
+            "    AND g.category = tr.category\n" +
+            "WHERE g.year = ?\n" +
+            "    AND g.month = ?\n" +
+            "    AND g.family = ?\n" +
+            "ORDER BY percent DESC";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -79,6 +98,22 @@ public class JdbcLimitsDao implements LimitsDao {
                 rs.getInt(2),
                 rs.getString(3),
                 rs.getString(4),
+                rs.getInt(5)
+        )).stream().collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LimitReportItem> getLimitReport(int year, int month, String family) {
+        return this.jdbcTemplate.query(LIMITS_REPORT, new Object[] {
+                year,
+                month,
+                family
+        }, (rs, rowNum) -> new LimitReportItem(
+                year,
+                rs.getInt(2),
+                rs.getString(1),
+                rs.getInt(3),
+                rs.getInt(4),
                 rs.getInt(5)
         )).stream().collect(Collectors.toList());
     }

@@ -20,16 +20,11 @@ job "goals-job" {
     task "goals-task" {
       driver = "docker"
 
-      env {
-        POSTGRES_DB="superset"
-        POSTGRES_HOST="192.168.0.21"
-        POSTGRES_PORT=5432
-        REDIS_HOST="192.168.0.21"
-        REDIS_PORT=6379
-      }
       template {
         data = <<EOH
 BOT_TOKEN="{{ key "telegram/bot/accounter/token" }}"
+POSTGRES_URL="{{ key "postgres.jdbc.url" }}"
+POSTGRES_DRIVER="{{ key "postgres.jdbc.driver" }}"
 POSTGRES_USER="{{ key "postgres.jdbc.user" }}"
 POSTGRES_PASSWORD="{{ key "postgres.jdbc.password" }}"
 OBJECT_STORAGE_ENDPOINT="{{ key "expenses/object/storage/fs.s3a.endpoint" }}"
@@ -42,7 +37,7 @@ EOH
       }
 
       config {
-        image = "127.0.0.1:9999/docker/goals-service:0.0.6"
+        image = "127.0.0.1:9999/docker/goals-service:0.0.1"
         
         port_map {
           web = 8080

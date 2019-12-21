@@ -43,7 +43,6 @@ public class JdbcReportDao implements ReportDao {
                 "          WHERE date_part('month', transaction_date) = date_part('month', current_timestamp)\n" +
                 "          AND   date_part('year', transaction_date) = date_part('year', current_timestamp)\n" +
                 "          AND NOT ARRAY['INCOME'] && tags\n" +
-                "          AND NOT ARRAY['HOBBY'] && tags\n" +
                 "          GROUP BY month, year, tag\n" +
                 "          ORDER BY year, month DESC;", new Object[] {},
                 (rs, rowNum) -> new ReportItem(
@@ -79,7 +78,6 @@ public class JdbcReportDao implements ReportDao {
                 "          FROM expenses.transactions\n" +
                 "          WHERE date_part('year', transaction_date) = date_part('year', current_timestamp)\n" +
                 "          AND NOT ARRAY['INCOME'] && tags\n" +
-                "          AND NOT ARRAY['HOBBY'] && tags\n" +
                 "          GROUP BY month, year, tag\n" +
                 "          ORDER BY year, month DESC;", new Object[] {},
                 (rs, rowNum) -> new ReportItem(
