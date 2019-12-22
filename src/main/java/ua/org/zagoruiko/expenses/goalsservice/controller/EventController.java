@@ -39,13 +39,18 @@ public class EventController {
 
 
     private StringBuilder buildReportMessage(List<ReportItemDTO> rep, String greetings) {
-        StringBuilder sb = new StringBuilder(greetings + "\n`");
+        StringBuilder sb = new StringBuilder(greetings + "\n```\n");
         Accumulator total = new Accumulator();
+        int max = rep.stream().mapToInt(c -> c.getCategory().length()).max().getAsInt();
         rep.stream().forEach(r -> {
             total.add(r.getAmount());
-            sb.append(r.getCategory() + ": " + r.getAmount() + "\n");
+            StringBuilder spaces = new StringBuilder(r.getCategory());
+            while (spaces.length() < max) {
+                spaces.append(' ');
+            }
+            sb.append(spaces.toString() + "\t: " + r.getAmount() + "\n");
         });
-        sb.append("`**Заголом: " + total.getTotal() + "**\n");
+        sb.append("```\n**Заголом: " + total.getTotal() + "**\n");
         return sb;
     }
 
