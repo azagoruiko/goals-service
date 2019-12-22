@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class LimitsServiceImpl implements LimitsService {
+    private final static int DEFAULT_MONTHLY_LIMIT = 75000;
+
     private LimitsDao limitsDao;
 
     @Autowired
@@ -83,6 +85,12 @@ public class LimitsServiceImpl implements LimitsService {
     }
 
     @Override
+    public LimitDTO setMonthlyLimit(LimitDTO limit) {
+        Limit limitModel = this.limitsDao.setMonthlyLimit(fromDTO(limit));
+        return fromModel(limitModel);
+    }
+
+    @Override
     public LimitDTO getLimit(int year, int month, String category, String family) {
         return fromModel(this.limitsDao.getLimit(year, month, category, family));
     }
@@ -124,9 +132,7 @@ public class LimitsServiceImpl implements LimitsService {
                 diff = diff / 2;
             }
             int newLimitAmount = limit.getLimit() + diff;
-            if (newLimitAmount < 0) {
-                newLimitAmount = limit.getLimit() / 2;
-            }
+            newLimitAmount = Math.max(limit.getLimit() / 2, newLimitAmount);
             newLimits.add(new LimitDTO(
                     limit.getMonth() == 12 ? limit.getYear() + 1 : limit.getYear(),
                     limit.getMonth() == 12 ? 1 : limit.getMonth() + 1,
@@ -136,5 +142,50 @@ public class LimitsServiceImpl implements LimitsService {
             ));
             newLimits.forEach(l -> this.setLimit(l));
         }
+    }
+
+    @Override
+    @Transactional
+    public LimitReportItemDTO getMonthlyLimitStatus(int year, int month, String family) {
+        LimitReportItemDTO limit =
+                fromModel(this.limitsDao.getMonthlyLimitStatus(year, month, family));
+        if (limit != null) {
+            return limit;
+        }
+        int oldYear = year;
+        int oldMonth = month - 1;
+        if (month == 0) {
+            oldYear--;
+            oldMonth = 12;
+        }
+        LimitReportItemDTO oldLimit =
+                fromModel(this.limitsDao.getMonthlyLimitStatus(oldYear, oldMonth, family));
+        if (oldLimit == null) {
+            LimitDTO newLimit = new LimitDTO(year, month, "", family, DEFAULT_MONTHLY_LIMIT);
+            this.setMonthlyLimit(newLimit);
+            return fromModel(this.limitsDao.getMonthlyLimitStatus(year, month, family));
+        }
+        renewMonthlyLimit(oldLimit, family);
+        return getMonthlyLimitStatus(year, month, family);
+    }
+
+    @Override
+    public void renewMonthlyLimit(LimitReportItemDTO oldLimit, String family) {
+        int diff = oldLimit.getLimit() - oldLimit.getAmount();
+        if (diff > 0) {
+            diff = diff / 2;
+        }
+        int newLimitAmount = oldLimit.getLimit() + diff;
+
+        newLimitAmount = Math.max(oldLimit.getLimit() / 2, newLimitAmount);
+
+        LimitDTO newLimit = new LimitDTO(
+                oldLimit.getMonth() == 12 ? oldLimit.getYear() + 1 : oldLimit.getYear(),
+                oldLimit.getMonth() == 12 ? 1 : oldLimit.getMonth() + 1,
+                null,
+                family,
+                newLimitAmount
+        );
+        this.setMonthlyLimit(newLimit);
     }
 }

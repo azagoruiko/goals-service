@@ -58,4 +58,12 @@ public class LimitsController {
 
     }
 
+    @RequestMapping(value = "/report/limits/monthly/{family}", method = RequestMethod.GET)
+    public LimitReportItemDTO getMonthlyReport(@PathVariable String family) {
+        Calendar date = Calendar.getInstance();
+        return this.limitsService.getMonthlyLimitStatus(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1,
+                family);
+
+    }
+
 }
