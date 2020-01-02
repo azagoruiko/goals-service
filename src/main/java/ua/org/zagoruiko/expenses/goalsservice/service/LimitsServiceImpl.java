@@ -111,7 +111,7 @@ public class LimitsServiceImpl implements LimitsService {
         }
         int oldYear = year;
         int oldMonth = month - 1;
-        if (month == 0) {
+        if (oldMonth == 0) {
             oldYear--;
             oldMonth = 12;
         }
@@ -154,7 +154,7 @@ public class LimitsServiceImpl implements LimitsService {
         }
         int oldYear = year;
         int oldMonth = month - 1;
-        if (month == 0) {
+        if (oldMonth == 0) {
             oldYear--;
             oldMonth = 12;
         }
@@ -182,7 +182,7 @@ public class LimitsServiceImpl implements LimitsService {
         LimitDTO newLimit = new LimitDTO(
                 oldLimit.getMonth() == 12 ? oldLimit.getYear() + 1 : oldLimit.getYear(),
                 oldLimit.getMonth() == 12 ? 1 : oldLimit.getMonth() + 1,
-                null,
+                "",
                 family,
                 newLimitAmount
         );

@@ -62,7 +62,7 @@ public class JdbcLimitsDao implements LimitsDao {
             "          ROUND(SUM(amount)) * -1 am\n" +
             "      FROM expenses.transactions t WHERE category <> 'INCOME'\n" +
             "      GROUP BY month, year) tr\n" +
-            "         RIGHT JOIN goals.limits g\n" +
+            "         JOIN goals.limits g\n" +
             "                    ON g.year = tr.year\n" +
             "                    AND g.month = tr.month\n" +
             "                    AND g.year = ?\n" +
