@@ -177,7 +177,7 @@ public class LimitsServiceImpl implements LimitsService {
         }
         int newLimitAmount = oldLimit.getLimit() + diff;
 
-        newLimitAmount = Math.max(oldLimit.getLimit() / 2, newLimitAmount);
+        newLimitAmount = Math.max(DEFAULT_MONTHLY_LIMIT - (DEFAULT_MONTHLY_LIMIT/4), newLimitAmount);
 
         LimitDTO newLimit = new LimitDTO(
                 oldLimit.getMonth() == 12 ? oldLimit.getYear() + 1 : oldLimit.getYear(),
