@@ -1,10 +1,13 @@
 job "goals-job" {
   datacenters = ["home"]
   type        = "service"
+  constraint {
+    attribute = "${node.class}"
+    value = "guestworker"
+  }
 
   group "goals-group" {
     count = 2
-
     constraint {
       operator = "distinct_hosts"
       value = "true"
@@ -42,17 +45,12 @@ EOH
         port_map {
           web = 8080
         }
-        volumes = [
-          "/var/nfs/:/var/nfs/",
-        ]
       }
-
       resources {
         cpu    = 200
         memory = 1024
 
         network {
-          mbits = 1
           port "web" {}
         }
       }
