@@ -1,4 +1,4 @@
-FROM oracle/graalvm-ce
+FROM springci/graalvm-ce:java11-0.12.x
 
 WORKDIR /app
 
