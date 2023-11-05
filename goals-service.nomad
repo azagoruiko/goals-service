@@ -3,11 +3,16 @@ job "goals-job" {
   type        = "service"
 
   group "goals-group" {
-    count = 2
+    count = 1
+
+    #constraint {
+    #  operator = "distinct_hosts"
+    #  value = "true"
+    #}
 
     constraint {
-      operator = "distinct_hosts"
-      value = "true"
+      attribute = "${node.class}"
+      value = "ora-free"
     }
 
     restart {
@@ -15,6 +20,12 @@ job "goals-job" {
       interval = "5m"
       delay    = "25s"
       mode     = "delay"
+    }
+
+    network {
+      port "web" {
+        static = 8080
+      }
     }
 
     task "goals-task" {
@@ -39,22 +50,12 @@ EOH
       config {
         image = "127.0.0.1:9999/docker/goals-service:0.0.3"
         
-        port_map {
-          web = 8080
-        }
-        volumes = [
-          "/var/nfs/:/var/nfs/",
-        ]
+        ports = ["web"]
       }
 
       resources {
-        cpu    = 200
-        memory = 1024
-
-        network {
-          mbits = 1
-          port "web" {}
-        }
+        cpu    = 500
+        memory = 512
       }
 
       service {
