@@ -12,7 +12,7 @@ job "goals-job" {
 
     constraint {
       attribute = "${node.class}"
-      value = "ora-free"
+      value = "guestworker"
     }
 
     restart {
