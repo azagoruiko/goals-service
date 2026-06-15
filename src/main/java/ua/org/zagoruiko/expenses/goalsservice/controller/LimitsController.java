@@ -2,13 +2,9 @@ package ua.org.zagoruiko.expenses.goalsservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.telegram.telegrambots.ApiContextInitializer;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ua.org.zagoruiko.expenses.goalsservice.dto.*;
 import ua.org.zagoruiko.expenses.goalsservice.service.LimitsService;
 import ua.org.zagoruiko.expenses.goalsservice.service.ReportService;
-import ua.org.zagoruiko.expenses.goalsservice.service.TheBot;
 import ua.org.zagoruiko.expenses.goalsservice.service.UserService;
 
 import java.util.Calendar;
@@ -18,9 +14,6 @@ import java.util.List;
 
 @RestController
 public class LimitsController {
-    @Autowired
-    private TheBot bot;
-
     @Autowired
     private LimitsService limitsService;
 
