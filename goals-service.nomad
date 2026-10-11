@@ -1,5 +1,5 @@
 job "goals-job" {
-  datacenters = ["home"]
+  datacenters = ["dc1"]
   type        = "service"
 
   group "goals-group" {
@@ -10,10 +10,6 @@ job "goals-job" {
     #  value = "true"
     #}
 
-    constraint {
-      attribute = "${node.class}"
-      value = "guestworker"
-    }
 
     restart {
       attempts = 10
@@ -48,7 +44,7 @@ EOH
       }
 
       config {
-        image = "127.0.0.1:9999/docker/goals-service:0.0.3"
+        image = "docker-registry.service.consul:5001/goals-service:0.0.17"
         
         ports = ["web"]
       }
