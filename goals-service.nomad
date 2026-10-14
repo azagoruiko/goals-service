@@ -44,7 +44,7 @@ EOH
       }
 
       config {
-        image = "docker-registry.service.consul:5001/goals-service:0.0.17"
+        image = "docker-registry.service.consul:5001/goals-service:0.0.18"
         
         ports = ["web"]
       }
