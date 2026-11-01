@@ -29,10 +29,12 @@ public class JdbcLimitsDao implements LimitsDao {
             "    AND is_monthly = false\n" +
             "    AND family = ?";
 
+    // ACCOUNTER-41: return every limit of the family for the month, including the
+    // monthly row (is_monthly = true, empty category). The filter is_monthly = false
+    // used to drop it, so a month whose only limit is the monthly one looked empty.
     private static final String FIND_ALL_LIMITS = "SELECT year, month, category, family, \"limit\" FROM goals.limits\n" +
             "WHERE year = ?\n" +
             "    AND month = ?\n" +
-            "    AND is_monthly = false\n" +
             "    AND family = ?";
 
     private static final String LIMITS_REPORT = "SELECT g.category, g.month, COALESCE(tr.am, 0) am, COALESCE(g.limit, 0) lim,\n" +
